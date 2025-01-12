@@ -11,5 +11,9 @@ And customize:
 ```html
 <h1>SEARCH RESULTS FOR *CHANGEME*</h1>
 ```
+and
+```html
+episodeImg.src = "logo.png";
+```
 There may still be parts in Italian, I don’t feel like modifying it further.
 Script for personal use, shared as is with no warranty of functionality.
