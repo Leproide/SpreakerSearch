@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SpreakerSearch</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Barra di navigazione */
+        #navbar {
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        #navbar input[type="text"], #navbar input[type="date"] {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            background-color: #333;
+            color: white;
+        }
+
+        #navbar button {
+            background-color: #FF9800;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #navbar button:hover {
+            background-color: #f57c00;
+        }
+
+        /* Container principale */
+        #main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            padding-top: 80px; /* Distanza dalla barra */
+            height: calc(100vh - 80px); /* Per lasciare spazio alla barra */
+            margin: 0;
+            width: 100%;
+        }
+
+        #search-container {
+            width: 80%;
+            max-width: 1200px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #episodes-container {
+            width: 80%;
+            max-width: 1200px;
+            margin-top: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 200px); /* Contenitore limitato per evitare overflow */
+            display: flex;
+            flex-direction: column; /* Cambiato per farli essere uno sotto l'altro */
+            align-items: center;
+        }
+
+        .episode {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between; /* Distribuisce gli elementi orizzontalmente */
+            align-items: center;
+            width: 100%;
+            max-width: 1000px; /* Limita la larghezza massima */
+            box-sizing: border-box;
+        }
+
+        .episode img {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+            border-radius: 8px;
+        }
+
+        .episode h3 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 500;
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .episode p {
+            color: #bbb;
+            margin: 5px 0;
+        }
+
+        .episode a {
+            text-decoration: none;
+            color: #FF9800;
+        }
+
+        .episode a:hover {
+            color: #f57c00;
+        }
+
+        /* Pulsante Riproduci */
+        .play-btn {
+            background-color: #FF9800; 
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .play-btn:hover {
+            background-color: #f57c00;
+        }
+
+        .play-btn i {
+            margin-right: 5px;
+        }
+
+        /* Popup di debug */
+        #debug-output {
+            position: fixed;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            color: #fff;
+            max-height: 60vh;
+            overflow-y: auto;
+            display: none;
+            z-index: 2000;
+        }
+
+        #toggle-debug {
+            background-color: #f57c00;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #toggle-debug:hover {
+            background-color: #f57c00;
+        }
+
+        /* Pulsante per mostrare o nascondere il debug */
+        .show-debug-btn {
+            background-color: #FF5722;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            margin-left: 15px;
+        }
+
+        .show-debug-btn:hover {
+            background-color: #e64a19;
+        }
+
+        /* Popup del player */
+        #player-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #player-popup .popup-content {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        #player-popup button.close-btn {
+            background-color: #FF5722;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        #player-popup button.close-btn:hover {
+            background-color: #e64a19;
+        }
+
+        audio {
+            width: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra di navigazione -->
+    <div id="navbar">
+        <input type="text" id="search-input" placeholder="Keyword to search..." />
+        <input type="date" id="end-date" />
+        <button id="search-button">Search</button>
+        <button id="toggle-debug">Show Debug</button>
+    </div>
+
+	<div>
+		<p align=center>Enter the keyword, a date to search up to, and press "Search"</p>
+	</div>
+
+    <!-- Contenitore principale per la ricerca e i risultati -->
+    <div id="main-container">
+        <!-- Sezione di ricerca -->
+        <div id="search-container">
+            <h1>SEARCH RESULTS FOR *CHANGEME*</h1>
+        </div>
+
+        <!-- Risultati -->
+        <div id="episodes-container"></div>
+    </div>
+
+    <!-- Popup di Debug -->
+    <div id="debug-output"></div>
+
+    <!-- Popup del player -->
+    <div id="player-popup">
+        <div class="popup-content">
+            <button class="close-btn">X</button>
+            <audio id="audio-player" controls>
+                <source id="audio-source" type="audio/mp3">
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        async function fetchEpisodes(query, endDate) {
+            const baseUrl = "https://api.spreaker.com/v2/shows/*CHANGEME*/episodes";
+            let url = `${baseUrl}?q=${encodeURIComponent(query)}&limit=99`;
+            let allEpisodes = [];
+            let debugOutput = `Search started for keyword: "${query}"\n`;
+
+            try {
+                let isFirstRequest = true;
+                let stopSearch = false;
+
+                do {
+                    debugOutput += `Request URL: ${url}\n`;
+
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        debugOutput += `Error during request: ${response.statusText}\n`;
+                        break;
+                    }
+
+                    const data = await response.json();
+                    debugOutput += `Response received successfully, status code: ${response.status}\n`;
+
+                    // Mostra il corpo della risposta per il debug
+                    debugOutput += `Received data: ${JSON.stringify(data.response, null, 2)}\n`;
+
+                    if (data.response && data.response.items) {
+                        // Filtra gli episodi in base alla query e alla data
+                        const filteredEpisodes = data.response.items.filter(episode => {
+                            const episodeDate = new Date(episode.published_at.split(" ")[0]); // Ignoriamo l'orario
+                            const maxDate = new Date(endDate);
+
+                            // Mostra l'episodio solo se è uguale o più recente della data limite
+                            return episode.title.toLowerCase().includes(query.toLowerCase()) && episodeDate >= maxDate;
+                        });
+
+                        debugOutput += `Episodes found: ${filteredEpisodes.length}\n`;
+                        allEpisodes = allEpisodes.concat(filteredEpisodes);
+                    }
+
+                    // Controlla se c'è un `next_url` nella risposta
+                    url = data.response.next_url || null;
+
+                    // Controlla se è stato trovato un episodio con una data successiva al limite
+                    if (data.response.items.length > 0) {
+                        const lastEpisode = data.response.items[data.response.items.length - 1];
+                        const lastEpisodeDate = new Date(lastEpisode.published_at.split(" ")[0]);
+                        if (lastEpisodeDate < new Date(endDate)) {
+                            debugOutput += `Date limit episode found (${endDate}). Stop search.\n`;
+                            stopSearch = true; // Imposta stop per terminare la ricerca
+                        }
+                    }
+
+                } while (url && !stopSearch);
+
+                // Visualizzazione degli episodi
+                const episodesContainer = document.getElementById("episodes-container");
+                episodesContainer.innerHTML = "";
+                if (allEpisodes.length === 0) {
+                    episodesContainer.innerHTML = "<p>Episode not found.</p>";
+                }
+
+                allEpisodes.forEach(episode => {
+                    const episodeDiv = document.createElement("div");
+                    episodeDiv.classList.add("episode");
+
+                    const episodeImg = document.createElement("img");
+                    episodeImg.src = "logo.png"; 
+                    episodeImg.alt = episode.title;
+
+                    const episodeTitle = document.createElement("h3");
+                    episodeTitle.textContent = episode.title;
+
+                    const playButton = document.createElement("button");
+                    playButton.classList.add("play-btn");
+                    playButton.innerHTML = `<i class="material-icons">play_arrow</i>Riproduci`;
+                    playButton.onclick = () => {
+                        // Mostra il popup
+                        document.getElementById("player-popup").style.display = "flex";
+                        const audioPlayer = document.getElementById("audio-player");
+                        const audioSource = document.getElementById("audio-source");
+                        audioSource.src = episode.playback_url;
+                        audioPlayer.load();
+                        audioPlayer.play();
+                    };
+
+                    episodeDiv.appendChild(episodeImg);
+                    episodeDiv.appendChild(episodeTitle);
+                    episodeDiv.appendChild(playButton);
+                    episodesContainer.appendChild(episodeDiv);
+                });
+
+                document.getElementById("debug-output").textContent = debugOutput;
+            } catch (error) {
+                console.error("Request error:", error);
+                debugOutput += `Episode search error: ${error.message}\n`;
+                document.getElementById("debug-output").textContent = debugOutput;
+            }
+        }
+
+        document.getElementById("search-button").addEventListener("click", () => {
+            const searchQuery = document.getElementById("search-input").value;
+            const endDate = document.getElementById("end-date").value;
+            if (!searchQuery || !endDate) {
+                alert("Enter the keyword and the deadline date");
+                return;
+            }
+            fetchEpisodes(searchQuery, endDate);
+        });
+
+        // Chiudi il popup e interrompi la riproduzione
+        document.querySelector("#player-popup .close-btn").addEventListener("click", () => {
+            const audioPlayer = document.getElementById("audio-player");
+            audioPlayer.pause(); // Ferma la riproduzione
+            document.getElementById("player-popup").style.display = "none"; // Nascondi il popup
+        });
+
+        // Toggle debug
+        document.getElementById("toggle-debug").addEventListener("click", () => {
+            const debugOutput = document.getElementById("debug-output");
+            debugOutput.style.display = (debugOutput.style.display === "none" || debugOutput.style.display === "") ? "block" : "none";
+        });
+    </script>
+
+</body>
+</html>
