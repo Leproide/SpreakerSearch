@@ -19,3 +19,9 @@ episodeImg.src = "logo.png";
 ```
 There may still be parts in Italian, I don’t feel like modifying it further.
 Script for personal use, shared as is with no warranty of functionality.
+
+# Screenshot:
+
+![immagine](https://github.com/user-attachments/assets/29654837-c150-4984-9cfd-9d347806d157)
+![immagine](https://github.com/user-attachments/assets/2fbacd03-8629-45f2-93f8-77d56340664f)
+
