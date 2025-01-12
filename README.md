@@ -10,7 +10,7 @@ const baseUrl = "https://api.spreaker.com/v2/shows/CHANGEME/episodes";
 ```
 You can find the show ID by click on ![immagine](https://github.com/user-attachments/assets/f0d25793-abca-4f64-95eb-4eb54ba54466) and embed options
 
-Esample:
+Example:
 ```html
 <iframe src='https://widget.spreaker.com/player?show_id=1679776&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true' width='100%' height='400px' frameborder='0'></iframe>
 ```
