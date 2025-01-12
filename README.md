@@ -16,11 +16,11 @@ Esample:
 ```
 Show ID: 1679776
 
-And customize:
+- And customize:
 ```html
 <h1>SEARCH RESULTS FOR CHANGEME</h1>
 ```
-and
+- and
 ```html
 episodeImg.src = "logo.png";
 ```
