@@ -1,5 +1,7 @@
 # SpreakerSearch 
 
+A simple web page to search for all episodes containing a specific keyword for a given Show ID, going backwards until the specified deadline. The episodes will be listed, and by clicking play, a player will start with the desired episode
+
 # Required Configuration:
 
 Change the show ID here by replacing *CHANGEME*:
