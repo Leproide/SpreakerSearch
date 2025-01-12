@@ -8,7 +8,7 @@ Change the show ID here by replacing CHANGEME:
 ```javascript
 const baseUrl = "https://api.spreaker.com/v2/shows/CHANGEME/episodes";
 ```
-You can find the show ID by click ok ![immagine](https://github.com/user-attachments/assets/f0d25793-abca-4f64-95eb-4eb54ba54466) and embed options
+You can find the show ID by click on ![immagine](https://github.com/user-attachments/assets/f0d25793-abca-4f64-95eb-4eb54ba54466) and embed options
 
 Esample:
 ```html
