@@ -5,239 +5,301 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SpreakerSearch</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 
-        /* Barra di navigazione */
+    /* Barra di navigazione */
+    #navbar {
+        background-color: #121212;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 15px;
+		margin-right: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        flex-wrap: wrap; /* Aggiunto per gestire la responsività */
+    }
+
+    #navbar input[type="text"], #navbar input[type="date"] {
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+        background-color: #333;
+        color: white;
+        flex: 1; /* Aggiunto per adattarsi allo spazio disponibile */
+        max-width: 300px;
+    }
+
+    #navbar button {
+        background-color: #FF9800;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+		flex: 1;
+	margin-right: 5px;
+
+    }
+
+    #navbar button:hover {
+        background-color: #f57c00;
+    }
+
+    /* Container principale */
+    #main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-y: auto;
+        padding-top: 80px; /* Distanza dalla barra */
+        height: calc(100vh - 80px); /* Per lasciare spazio alla barra */
+        margin: 0;
+        width: 100%;
+    }
+
+    #search-container {
+        width: 90%;
+        max-width: 1200px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    #episodes-container {
+        width: 90%;
+        max-width: 1200px;
+        margin-top: 20px;
+        overflow-y: auto;
+        max-height: calc(100vh - 200px); /* Contenitore limitato per evitare overflow */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .episode {
+        background-color: #1e1e1e;
+        border: 1px solid #333;
+        padding: 15px;
+        margin: 10px;
+        border-radius: 8px;
+        display: flex;
+        flex-wrap: wrap; /* Gestisce la responsività */
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1000px;
+        box-sizing: border-box;
+    }
+
+    .episode img {
+        width: 100px;
+        height: 100px;
+        margin-right: 20px;
+        border-radius: 8px;
+    }
+
+    .episode h3 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 500;
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    .episode p {
+        color: #bbb;
+        margin: 5px 0;
+    }
+
+    .episode a {
+        text-decoration: none;
+        color: #FF9800;
+    }
+
+    .episode a:hover {
+        color: #f57c00;
+    }
+
+    /* Pulsante Riproduci */
+    .play-btn {
+        background-color: #FF9800; 
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .play-btn:hover {
+        background-color: #f57c00;
+    }
+
+    .play-btn i {
+        margin-right: 5px;
+    }
+
+    /* Popup di debug */
+    #debug-output {
+        position: fixed;
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+        padding: 20px;
+        color: #fff;
+        max-height: 60vh;
+        overflow-y: auto;
+        display: none;
+        z-index: 2000;
+    }
+
+    #toggle-debug {
+        background-color: #f57c00;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+
+    }
+
+    #toggle-debug:hover {
+        background-color: #f57c00;
+    }
+
+    .show-debug-btn {
+        background-color: #FF5722;
+        color: white;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        margin-left: 15px;
+    }
+
+    .show-debug-btn:hover {
+        background-color: #e64a19;
+    }
+
+    /* Popup del player */
+    #player-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    #player-popup .popup-content {
+        background-color: #1e1e1e;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 800px;
+        text-align: center;
+    }
+
+    #player-popup button.close-btn {
+        background-color: #FF5722;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    #player-popup button.close-btn:hover {
+        background-color: #e64a19;
+    }
+
+    audio {
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    /* Media Query per schermi più piccoli */
+    @media (max-width: 768px) {
         #navbar {
-            background-color: #121212;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            flex-direction: column;
+            align-items: stretch;
         }
 
         #navbar input[type="text"], #navbar input[type="date"] {
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            margin-right: 10px;
-            background-color: #333;
-            color: white;
+            margin: 5px 0;
+            width: 100%;
+            max-width: none;
         }
 
         #navbar button {
-            background-color: #FF9800;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-
-        #navbar button:hover {
-            background-color: #f57c00;
-        }
-
-        /* Container principale */
-        #main-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-y: auto;
-            padding-top: 80px; /* Distanza dalla barra */
-            height: calc(100vh - 80px); /* Per lasciare spazio alla barra */
-            margin: 0;
             width: 100%;
-        }
-
-        #search-container {
-            width: 80%;
-            max-width: 1200px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        #episodes-container {
-            width: 80%;
-            max-width: 1200px;
-            margin-top: 20px;
-            overflow-y: auto;
-            max-height: calc(100vh - 200px); /* Contenitore limitato per evitare overflow */
-            display: flex;
-            flex-direction: column; /* Cambiato per farli essere uno sotto l'altro */
-            align-items: center;
+            margin-top: 10px;
         }
 
         .episode {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between; /* Distribuisce gli elementi orizzontalmente */
-            align-items: center;
-            width: 100%;
-            max-width: 1000px; /* Limita la larghezza massima */
-            box-sizing: border-box;
+            flex-direction: column;
+            align-items: stretch;
         }
 
         .episode img {
-            width: 100px;
-            height: 100px;
-            margin-right: 20px;
-            border-radius: 8px;
+            margin-bottom: 10px;
+            margin-right: 0;
         }
 
-        .episode h3 {
-            margin: 0;
-            color: #ffffff;
-            font-size: 18px;
-            font-weight: 500;
-            flex-grow: 1;
-            text-align: left;
-        }
-
-        .episode p {
-            color: #bbb;
-            margin: 5px 0;
-        }
-
-        .episode a {
-            text-decoration: none;
-            color: #FF9800;
-        }
-
-        .episode a:hover {
-            color: #f57c00;
-        }
-
-        /* Pulsante Riproduci */
         .play-btn {
-            background-color: #FF9800; 
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .play-btn:hover {
-            background-color: #f57c00;
-        }
-
-        .play-btn i {
-            margin-right: 5px;
-        }
-
-        /* Popup di debug */
-        #debug-output {
-            position: fixed;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 600px;
-            padding: 20px;
-            color: #fff;
-            max-height: 60vh;
-            overflow-y: auto;
-            display: none;
-            z-index: 2000;
-        }
-
-        #toggle-debug {
-            background-color: #f57c00;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        #toggle-debug:hover {
-            background-color: #f57c00;
-        }
-
-        /* Pulsante per mostrare o nascondere il debug */
-        .show-debug-btn {
-            background-color: #FF5722;
-            color: white;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 5px;
-            margin-left: 15px;
-        }
-
-        .show-debug-btn:hover {
-            background-color: #e64a19;
-        }
-
-        /* Popup del player */
-        #player-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
+            align-self: stretch;
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .episode h3 {
+            font-size: 16px;
         }
 
-        #player-popup .popup-content {
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 800px;
-            text-align: center;
+        .episode img {
+            width: 80px;
+            height: 80px;
         }
 
-        #player-popup button.close-btn {
-            background-color: #FF5722;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        #player-popup button.close-btn:hover {
-            background-color: #e64a19;
+        #main-container {
+            padding-top: 70px;
         }
 
         audio {
-            width: 100%;
-            border-radius: 5px;
+            width: 90%;
         }
-    </style>
+    }
+</style>
+	
 </head>
 <body>
 
