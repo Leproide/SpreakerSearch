@@ -21,42 +21,44 @@
     }
 
     /* Barra di navigazione */
-    #navbar {
-        background-color: #121212;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 15px 15px;
-		margin-right: 15px;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        flex-wrap: wrap; /* Aggiunto per gestire la responsività */
-    }
+#navbar {
+    background-color: #121212;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px; /* Uniforme sui lati */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    flex-wrap: wrap; /* Per responsività */
+    gap: 10px; /* Spaziatura uniforme tra gli elementi */
+}
 
-    #navbar input[type="text"], #navbar input[type="date"] {
-        padding: 10px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        margin-right: 10px;
-        background-color: #333;
-        color: white;
-        flex: 1; /* Aggiunto per adattarsi allo spazio disponibile */
-        max-width: 300px;
-    }
+/* Stili per input e button dentro la navbar */
+#navbar input[type="text"], 
+#navbar input[type="date"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    width: calc(33% - 20px); /* Spazio uniforme rispetto alla barra */
+    min-width: 150px;
+    box-sizing: border-box; /* Per includere padding nei calcoli di larghezza */
+}
 
-    #navbar button {
-        background-color: #FF9800;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-		flex: 1;
-	margin-right: 5px;
-
-    }
+#navbar button {
+    background-color: #FF9800;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box; /* Per gestire padding */
+    min-width: 150px;
+    text-align: center;
+}
 
     #navbar button:hover {
         background-color: #f57c00;
